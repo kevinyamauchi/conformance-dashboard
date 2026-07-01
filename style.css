@@ -287,6 +287,11 @@ tbody tr:hover .cell--name {
   border-radius: 4px;
 }
 
+.page-footer a code {
+  background: transparent;
+  padding: 0;
+}
+
 .page-footer a {
   color: var(--content-ink);
   text-decoration: none;
