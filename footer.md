@@ -1,0 +1,1 @@
+The data for the table is fetched once per hour. If you'd like to directly inspect the table values, they are accessible at [`data/conformance_results.json`](data/conformance_results.json).

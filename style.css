@@ -1,0 +1,320 @@
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/AtkinsonHyperlegible-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/AtkinsonHyperlegible-Bold.woff2") format("woff2");
+}
+
+:root {
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --paper-alt: #eeece3;
+  --table-header-bg: #1c4a87;
+  --table-header-ink: #ffffff;
+  --table-ink: #1c1f1e;
+  --content-ink: #5b5f5a;
+  --ink: #1c1f1e;
+  --ink-soft: #5b5f5a;
+  --line: #dad6cb;
+  --line-strong: #c3bfb0;
+  --teal: #2b6e6b;
+  --teal-dark: #1f5250;
+  --green: #2e7d4f;
+  --green-bg: #e2efe4;
+  --red: #b3492f;
+  --red-bg: #f6e5df;
+  --gray-bg: #e9e7e0;
+  --gray-ink: #837f74;
+
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  --sans: "Atkinson Hyperlegible", -apple-system, "Segoe UI", Roboto, ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+/* Header */
+
+.page-header {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 2rem;
+}
+
+h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.6rem;
+  color: var(--ink);
+}
+
+.subtitle {
+  color: var(--content-ink);
+  font-size: 1rem;
+}
+
+.subtitle p {
+  margin: 0;
+}
+
+.subtitle p + p {
+  margin-top: 0.75rem;
+}
+
+/* Table */
+
+.table-scroll {
+  margin-top: 2rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-raised);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 560px;
+}
+
+/* Sticky headers are applied per-cell rather than to <thead> itself -
+   position: sticky on <thead> breaks the left: 0 sticky calculation on
+   nested cells like .col-name in at least one major browser engine. Row
+   1 sticks to top: 0; row 2 sticks just below it, offset by row 1's
+   rendered height (fixed, since its padding/font-size are fixed here). */
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--table-header-bg);
+  color: var(--table-header-ink);
+  z-index: 2;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+thead tr:last-child th {
+  top: 2.8rem;
+}
+
+/* Version group header (row 1) is slightly larger/wider-tracked than the
+   test-type headers (row 2) nested under it, to read as the outer level
+   of the hierarchy. */
+.col-group {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.col-name {
+  text-align: left;
+  left: 0;
+  z-index: 3;
+}
+
+/* Divider between version groups - light on the dark table header,
+   darker on the white table body. */
+thead th.col-group-end {
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+tbody td.col-group-end {
+  border-right: 1px solid var(--line-strong);
+}
+
+tbody td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  vertical-align: middle;
+  color: var(--table-ink);
+}
+
+tbody tr:hover {
+  background: rgba(43, 110, 107, 0.05);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cell--name {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--paper-raised);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cell--version {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+tbody tr:hover .cell--name {
+  background: #f1f5f2;
+}
+
+.cell--name a {
+  color: var(--table-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.cell--name a:hover {
+  color: var(--teal-dark);
+  border-color: var(--teal);
+}
+
+/* Boolean chips */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.9rem;
+  height: 1.6rem;
+  padding: 0 0.4rem;
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.chip--yes {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.chip--no {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.chip--unknown {
+  background: var(--gray-bg);
+  color: var(--gray-ink);
+}
+
+/* Percentage gauge */
+
+.gauge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.4rem;
+  height: 1.6rem;
+  padding: 0 0.5rem;
+  border-radius: 5px;
+  background: var(--gauge-bg, var(--gray-bg));
+  overflow: hidden;
+}
+
+.gauge__fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: var(--gauge-pct, 0%);
+  background: var(--gauge-accent, var(--gray-ink));
+}
+
+.gauge__label {
+  position: relative;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--gauge-accent, var(--gray-ink));
+}
+
+/* Footer */
+
+.page-footer {
+  margin-top: 2rem;
+  font-size: 0.82rem;
+}
+
+.footer-text {
+  color: var(--content-ink);
+}
+
+.footer-text p {
+  margin: 0;
+}
+
+.footer-text p + p {
+  margin-top: 0.5rem;
+}
+
+.page-footer code {
+  font-family: var(--mono);
+  background: var(--paper-alt);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.page-footer a {
+  color: var(--content-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.page-footer a:hover {
+  color: var(--teal-dark);
+  border-color: var(--teal);
+}
+
+#generated-at {
+  font-family: var(--mono);
+  color: var(--gray-ink);
+}
+
+@media (max-width: 640px) {
+  .page-header {
+    padding: 2.5rem 1.25rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  tbody tr {
+    transition: background-color 0.15s ease;
+  }
+}

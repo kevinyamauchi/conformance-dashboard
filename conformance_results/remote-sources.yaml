@@ -1,0 +1,20 @@
+# URLs of raw tool YAML files maintained by tool developers in their own
+# repositories, following the same schema as files in
+# conformance_results/local/.
+#
+# The "Build compatibility data" GitHub Action fetches each of these on a
+# schedule (and on demand) and merges the results into
+# data/conformance_results.json.
+# A tool developer who wants to be listed:
+#   1. Publishes a YAML file matching the schema in
+#      conformance_results/local/abc.yaml somewhere Claude/anyone can
+#      fetch by raw URL (e.g. a raw GitHub URL from their own repo,
+#      updated by their own CI).
+#   2. Opens a PR here adding that URL below.
+#
+# If a remote tool's id collides with a local one in
+# conformance_results/local/, the build fails - that's treated as a
+# conflict to resolve, not something to silently paper over.
+
+sources: []
+  # - https://raw.githubusercontent.com/example-org/example-tool/main/zarr-compat.yaml

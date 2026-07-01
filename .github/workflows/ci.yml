@@ -1,0 +1,20 @@
+name: CI
+
+# Validates that the site builds successfully on every pull request
+# (including from forks, where nothing is committed or pushed). This is
+# a pure check: it calls the reusable build workflow and stops there.
+#
+# Deliberately does not also trigger on push to main: deploy.yml already
+# calls the same reusable build workflow before publishing, so adding a
+# push trigger here would just run the build twice per push for no
+# benefit.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml

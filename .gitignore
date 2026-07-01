@@ -1,3 +1,10 @@
+.DS_Store
+
+# Generated site output (built by scripts/build_site.py; not committed -
+# deploy.yml publishes it straight to GitHub Pages as a build artifact)
+/index.html
+/data/conformance_results.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

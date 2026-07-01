@@ -1,0 +1,53 @@
+name: Build
+
+# Reusable workflow - does the actual build (validate + fetch + render)
+# and uploads the result as an artifact. Has no side effects of its own:
+# it never commits or deploys anything, so it's safe to run on pull
+# requests from forks as well as on pushes to main.
+#
+# Called by ci.yml (validate on PRs and pushes) and deploy.yml (publish
+# on pushes to main, on schedule, and on manual dispatch).
+
+on:
+  workflow_call:
+    outputs:
+      artifact-name:
+        description: "Name of the uploaded build-output artifact"
+        value: ${{ jobs.build.outputs.artifact-name }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: build-output
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Pinning to a tagged release rather than a commit SHA is a
+      # deliberate readability trade-off here; for maximum supply-chain
+      # safety, pin to the full commit SHA instead (see astral-sh/setup-uv
+      # releases for the current recommendation).
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      # No separate "install dependencies" step: uv run --script reads
+      # the PEP 723 metadata block at the top of build_site.py and
+      # resolves/installs pyyaml, pydantic, and jinja2 into an ephemeral
+      # environment automatically.
+      - name: Build data/conformance_results.json and index.html
+        run: uv run --script scripts/build_site.py
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            data/conformance_results.json
+            index.html
+          if-no-files-found: error
