@@ -36,7 +36,7 @@ versions:
 - `versions` is a list with one entry per tested release of your own tool. The `version` is the library's own release version (whatever was tested to produce these results) and not the spec version. The spec version is covered by `values`. Each release is rendered as its own row in the table, grouped under the tool's name. Version strings must be unique within one tool.
 - Each entry's `values` keys must match a test set `id` nested under a
   version in `columns.yaml` (e.g. `v0.6-transforms`, not `v0.6`). Omit a
-  key entirely if that combination hasn't been tested — it renders as
+  key entirely if that combination hasn't been tested. Omitted columns render as
   unknown ("–") rather than 0%.
 
 
