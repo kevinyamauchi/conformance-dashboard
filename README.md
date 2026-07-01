@@ -9,6 +9,7 @@ This generates a dashboard webpage to communicate the current state of spec supp
 
 All of the conformance tests are self-reported by the tool developers. If you would like your tool to be included, you need to run the coformance test and generate a ConformanceResult YAML file (described below). You then need to either add the YAML file or the URL from which the YAML file can be fetched to this repo. 
 
+ConformanceResult YAML file:
 ```yaml
 id: my-library
 name: My Library
@@ -49,6 +50,11 @@ The build script contains PEP 723 metadata and can be run with uv:
 ```bash
 uv run --script scripts/build_site.py
 ```
+The build script does the following:
+1. Loads and validates the local conformance test results from `conformance_results/local`
+2. Loads and validates teh remote conformance test results listed in `conformance_results/remote-sources.yaml.
+3. Merges all results into a single table and saves them to data/conformance_results.json
+4. Generates and saves the index.html webpage using the Jinja template in `templates/index.html.j2`.
 
 This produces two outputs:
 - index.html: this is the website
@@ -64,7 +70,7 @@ This sets the site-wide appearance such as font colors and the page title.
 
 You can change the main text below the site title by editing the main_text.md. You can change the footer text by editing footer.md. Both of these files are converted from markdown to HTML with the [markdown](https://github.com/Python-Markdown/markdown) library.
 
-## JINJA template
+## Jinja template
 
 The index.html page is generated using a JINJA template. If you would like to make adjustments to the layout or other parts of the site not available through the config or markdown files, you can edit the JINJA template at: `templates/index.html.j2` and the CSS at style.css.
 
@@ -87,10 +93,8 @@ We use Github actions to build and deploy the website.
 ## Adding or changing table columns
 
 `columns.yaml` has two levels: a list of spec **versions**, each with a list
-of **tests** that were run against that version. The table reflects this directly —
-each version gets one top-level column spanning its tests, e.g. `v0.6`
-spans `attributes` / `zarr` / `transforms` underneath it. Not every version
-needs the same tests (e.g., `v0.4` and `v0.5` currently only have
+of **tests** that were run against that version. The table renbders each version with one top-level column spanning its tests. For example, `v0.6`
+spans `attributes` / `zarr` / `transforms` underneath it. Versions do not all have to have the same tests (e.g., `v0.4` and `v0.5` currently only have
 `attributes`/`zarr`, while `v0.6` adds `transforms`).
 
 A version needs `id` and `label`, plus a `tests` list. Each test needs
