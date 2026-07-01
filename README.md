@@ -13,26 +13,36 @@ ConformanceResult YAML file:
 ```yaml
 id: my-library
 name: My Library
-version: "1.4.2"
 homepage: "https://github.com/me/my-library"
-values:
-  v0.4-attributes: 100
-  v0.4-zarr: 100
-  v0.5-attributes: 80
-  v0.5-zarr: 90
-  v0.6-attributes: 40
-  v0.6-zarr: 0
-  # v0.6-transforms omitted: not tested yet, renders as "–"
+versions:
+  - version: "1.4.2"
+    values:
+      v0.4-attributes: 100
+      v0.4-zarr: 100
+      v0.5-attributes: 80
+      v0.5-zarr: 90
+      v0.6-attributes: 40
+      v0.6-zarr: 0
+      # v0.6-transforms omitted: not tested yet, renders as "–"
+
+  - version: "1.3.0"
+    values:
+      v0.4-attributes: 100
+      v0.4-zarr: 100
 ```
 
-- `id`, `name`, and `version` are required; `homepage` is optional but
-  must be a valid `http`/`https` URL if present. `version` is the
+- `id`, `name`, and `versions` are required; `homepage` is optional but
+  must be a valid `http`/`https` URL if present.
+- `versions` is a list with one entry per tested release of your own
+  tool — most tools will just have one. Each entry's `version` is the
   library's own release version (whatever was tested to produce these
-  results) — not a spec version, which is what `values` covers.
-- `values` keys must match a test set `id` nested under a version in
-  `columns.yaml` (e.g. `v0.6-transforms`, not `v0.6`). Omit a key
-  entirely if that combination hasn't been tested — it renders as unknown
-  ("–") rather than 0%.
+  results) — not a spec version, which is what `values` covers. Each
+  release is rendered as its own row in the table, grouped under the
+  tool's name. Version strings must be unique within one tool.
+- Each entry's `values` keys must match a test set `id` nested under a
+  version in `columns.yaml` (e.g. `v0.6-transforms`, not `v0.6`). Omit a
+  key entirely if that combination hasn't been tested — it renders as
+  unknown ("–") rather than 0%.
 
 
 ### Adding your conformance test result to the repo

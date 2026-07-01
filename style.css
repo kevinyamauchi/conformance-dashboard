@@ -160,11 +160,31 @@ tbody td {
 }
 
 tbody tr:hover {
-  background: rgba(43, 110, 107, 0.05);
+  background: rgba(28, 31, 30, 0.035);
 }
 
-tbody tr:last-child td {
+/* Each tool is its own <tbody>, so a rowspan'd name/homepage cell can be
+   highlighted by hovering any of its version rows - a rowspan cell is
+   only ever a descendant of the row it's declared in, so a `tr:hover`
+   selector alone can't reach it from a sibling row. Opaque (not rgba):
+   on the tool's first row, this cell sits on top of that row's own
+   `tbody tr:hover` tint, and a translucent color here would stack with
+   it and read darker than on the tool's other rows. */
+tbody:hover .cell--name {
+  background: #f6f6f6;
+}
+
+/* Only the very last row of the whole table drops its bottom border;
+   :last-child is scoped per-tbody, so target the last tbody explicitly
+   rather than every tool group's last row. */
+tbody:last-of-type tr:last-child td {
   border-bottom: none;
+}
+
+/* Divider between tools - each tool's rows live in their own <tbody>, so
+   this marks the start of every group except the first. */
+tbody + tbody tr:first-child td {
+  border-top: 1px solid var(--line-strong);
 }
 
 .cell--name {
@@ -182,10 +202,6 @@ tbody tr:last-child td {
   font-size: 0.82rem;
   color: var(--ink-soft);
   white-space: nowrap;
-}
-
-tbody tr:hover .cell--name {
-  background: #f1f5f2;
 }
 
 .cell--name a {
@@ -225,7 +241,7 @@ tbody tr:hover .cell--name {
 }
 
 .chip--unknown {
-  background: var(--gray-bg);
+  background: rgba(28, 31, 30, 0.035);
   color: var(--gray-ink);
 }
 
@@ -282,7 +298,7 @@ tbody tr:hover .cell--name {
 
 .page-footer code {
   font-family: var(--mono);
-  background: var(--paper-alt);
+  background: rgba(28, 31, 30, 0.035);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }

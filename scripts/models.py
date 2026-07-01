@@ -150,46 +150,75 @@ class RemoteSourcesFile(BaseModel):
 CellValue = Union[bool, float, int, None]
 
 
+def _validate_values(values: dict) -> dict:
+    for key, value in values.items():
+        if not _ID_PATTERN.match(key):
+            raise ValueError(f"value key '{key}' is not a valid column id")
+        if value is None or isinstance(value, bool):
+            continue
+        if isinstance(value, (int, float)):
+            # check the numeric values work as a percentage
+            if isinstance(value, float) and (
+                math.isnan(value) or math.isinf(value)
+            ):
+                raise ValueError(f"value for '{key}' must be a finite number")
+            if not (0 <= value <= 100):
+                raise ValueError(
+                    f"numeric value for '{key}' must be between 0 and 100, "
+                    f"got {value}"
+                )
+            continue
+        raise ValueError(
+            f"value for '{key}' must be a boolean, a number 0-100, or "
+            f"omitted; got {type(value).__name__}"
+        )
+    return values
+
+
+class ConformanceVersionEntry(BaseModel):
+    """One tested release of a tool/library, nested under `versions` in a
+    ConformanceResult - e.g. the results produced by running the
+    conformance tests against v0.9.4 of some tool."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    version: str = Field(min_length=1)
+    values: dict[str, CellValue] = Field(default_factory=dict)
+
+    @field_validator("values")
+    @classmethod
+    def validate_values(cls, values: dict) -> dict:
+        return _validate_values(values)
+
+
 class ConformanceResult(BaseModel):
-    """One tool/library's conformance result, as defined in a
+    """One tool/library's conformance results, as defined in a
     conformance_results/local/*.yaml file or fetched from a URL listed in
-    conformance_results/remote-sources.yaml."""
+    conformance_results/remote-sources.yaml.
+
+    A tool may report results for more than one of its own releases
+    (`versions`); each is rendered as its own row in the table."""
 
     model_config = ConfigDict(extra="forbid")
 
     id: str = Field(min_length=1)
     name: str = Field(min_length=1)
-    version: str = Field(min_length=1)
     homepage: Optional[HttpUrl] = None
-    values: dict[str, CellValue] = Field(default_factory=dict)
+    versions: list[ConformanceVersionEntry] = Field(min_length=1)
 
     @field_validator("id")
     @classmethod
     def id_is_safe_slug(cls, value: str) -> str:
         return _validate_id_slug(value)
 
-    @field_validator("values")
+    @field_validator("versions")
     @classmethod
-    def validate_values(cls, values: dict) -> dict:
-        for key, value in values.items():
-            if not _ID_PATTERN.match(key):
-                raise ValueError(f"value key '{key}' is not a valid column id")
-            if value is None or isinstance(value, bool):
-                continue
-            if isinstance(value, (int, float)):
-                # check the numeric values work as a percentage
-                if isinstance(value, float) and (
-                    math.isnan(value) or math.isinf(value)
-                ):
-                    raise ValueError(f"value for '{key}' must be a finite number")
-                if not (0 <= value <= 100):
-                    raise ValueError(
-                        f"numeric value for '{key}' must be between 0 and 100, "
-                        f"got {value}"
-                    )
-                continue
-            raise ValueError(
-                f"value for '{key}' must be a boolean, a number 0-100, or "
-                f"omitted; got {type(value).__name__}"
-            )
-        return values
+    def version_strings_unique(
+        cls, versions: list[ConformanceVersionEntry]
+    ) -> list[ConformanceVersionEntry]:
+        seen = set()
+        for entry in versions:
+            if entry.version in seen:
+                raise ValueError(f"duplicate version '{entry.version}' within one tool")
+            seen.add(entry.version)
+        return versions

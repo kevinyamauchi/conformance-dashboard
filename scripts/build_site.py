@@ -394,13 +394,14 @@ def build_dataset(column_groups: list[VersionGroup], tools: list[ConformanceResu
     """
     column_ids = {test.id for group in column_groups for test in group.tests}
     for tool in tools:
-        unknown_keys = set(tool.values) - column_ids
-        if unknown_keys:
-            print(
-                f"WARNING: tool '{tool.id}' has values for undefined column(s) "
-                f"{unknown_keys}; they will be ignored",
-                file=sys.stderr,
-            )
+        for version_entry in tool.versions:
+            unknown_keys = set(version_entry.values) - column_ids
+            if unknown_keys:
+                print(
+                    f"WARNING: tool '{tool.id}' version '{version_entry.version}' has "
+                    f"values for undefined column(s) {unknown_keys}; they will be ignored",
+                    file=sys.stderr,
+                )
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -471,20 +472,27 @@ def render_html(
         for index, test in enumerate(group.tests)
     ]
 
-    rows = []
+    # One group per tool, each rendered as its own <tbody> so that hovering
+    # any of its version rows can highlight the rowspan'd name/homepage
+    # cell via a pure-CSS `tbody:hover` rule - a rowspan cell is only ever
+    # a descendant of the row it's declared in, so a single shared <tbody>
+    # can't do this with a `tr:hover` selector alone.
+    tool_groups = []
     for tool in tools:
-        cells = []
-        for column, group_end in flat_columns:
-            value = tool.values.get(column.id)
-            cell = CELL_RENDERERS[column.type](value)
-            cell["group_end"] = group_end
-            cells.append(cell)
-        rows.append(
+        version_rows = []
+        for version_entry in tool.versions:
+            cells = []
+            for column, group_end in flat_columns:
+                value = version_entry.values.get(column.id)
+                cell = CELL_RENDERERS[column.type](value)
+                cell["group_end"] = group_end
+                cells.append(cell)
+            version_rows.append({"version": version_entry.version, "cells": cells})
+        tool_groups.append(
             {
                 "name": tool.name,
-                "version": tool.version,
                 "homepage": str(tool.homepage) if tool.homepage else None,
-                "cells": cells,
+                "rows": version_rows,
             }
         )
 
@@ -499,7 +507,7 @@ def render_html(
     template = env.get_template("index.html.j2")
     html = template.render(
         column_groups=column_groups,
-        rows=rows,
+        tool_groups=tool_groups,
         generated_at=datetime.fromisoformat(generated_at),
         config=config,
         main_text_html=main_text_html,
