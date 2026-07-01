@@ -1,7 +1,7 @@
 # OME-Zarr 
 
-[!NOTE]
-This is a work-in-progress and the results are mock results for testing.
+> [!NOTE]
+> This is a work-in-progress and the results are mock results for testing.
 
 This generates a dashboard webpage to communicate the current state of spec support of IO and validator libraries across the OME-Zarr ecosystem. The webpage is a static site generated from YAML files reporting conformance testing results of tools and served with Github pages.
 
