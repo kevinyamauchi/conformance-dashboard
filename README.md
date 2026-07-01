@@ -33,12 +33,7 @@ versions:
 
 - `id`, `name`, and `versions` are required; `homepage` is optional but
   must be a valid `http`/`https` URL if present.
-- `versions` is a list with one entry per tested release of your own
-  tool — most tools will just have one. Each entry's `version` is the
-  library's own release version (whatever was tested to produce these
-  results) — not a spec version, which is what `values` covers. Each
-  release is rendered as its own row in the table, grouped under the
-  tool's name. Version strings must be unique within one tool.
+- `versions` is a list with one entry per tested release of your own tool. Each entry's `version` is the library's own release version (whatever was tested to produce these results) and not a spec version, which is what `values` covers. Each release is rendered as its own row in the table, grouped under the tool's name. Version strings must be unique within one tool.
 - Each entry's `values` keys must match a test set `id` nested under a
   version in `columns.yaml` (e.g. `v0.6-transforms`, not `v0.6`). Omit a
   key entirely if that combination hasn't been tested — it renders as
