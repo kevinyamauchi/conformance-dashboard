@@ -1,0 +1,8 @@
+# This config is for setting the appearance of the page.
+# colors are defined using hex color codes.
+title: "OME-Zarr conformance matrix"
+table_header_color: "#1c4a87"
+background_color: "#ffffff"
+text_font_color: "#5b5f5a"
+table_header_font_color: "#ffffff"
+table_font_color: "#1c1f1e"

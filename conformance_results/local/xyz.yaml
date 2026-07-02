@@ -1,0 +1,21 @@
+id: xyz
+name: xyz
+homepage: "https://github.com/example/xyz"
+versions:
+  - version: "0.9.4"
+    values:
+      v0.4-attributes: 100
+      v0.4-zarr: 100
+      v0.5-attributes: 80
+      v0.5-zarr: 90
+      v0.6-attributes: 40
+      v0.6-zarr: 0
+
+  - version: "0.8.0"
+    values:
+      v0.4-attributes: 100
+      v0.4-zarr: 100
+      v0.5-attributes: 0
+      v0.5-zarr: 0
+      v0.6-attributes: 0
+      v0.6-zarr: 0

@@ -1,0 +1,55 @@
+# Defines the columns of the compatibility table, in display order.
+#
+# Structure: a list of spec versions, each with a list of tests run
+# against that version. Not every version runs every test - e.g. v0.6
+# adds a "transforms" test that v0.4 and v0.5 don't have.
+#
+# Each version needs:
+#   id     - stable identifier for the version group (no spaces)
+#   label  - text shown in the top-level (version) table header
+#   tests  - the leaf columns for that version, at least one
+#
+# Each test needs:
+#   id    - stable identifier referenced by tool YAML files (no spaces),
+#           conventionally "<version-id>-<test-name>"; must be unique
+#           across the whole file, not just within its version
+#   label - text shown in the second-row (test) table header
+#   type  - how values are interpreted and rendered. Currently supported:
+#             boolean    - true / false / null -> Y (green) / N (red) / – (gray)
+#             percentage - number 0-100 / null  -> gradient chip + fill bar
+#
+# To add a new spec version, add a new version block here, then set the
+# corresponding key(s) under `values:` in each tool's YAML file. To add a
+# test to an existing version, add it to that version's `tests` list.
+
+columns:
+  - id: v0.4
+    label: "v0.4"
+    tests:
+      - id: v0.4-attributes
+        label: "attributes"
+        type: percentage
+      - id: v0.4-zarr
+        label: "zarr"
+        type: percentage
+  - id: v0.5
+    label: "v0.5"
+    tests:
+      - id: v0.5-attributes
+        label: "attributes"
+        type: percentage
+      - id: v0.5-zarr
+        label: "zarr"
+        type: percentage
+  - id: v0.6
+    label: "v0.6"
+    tests:
+      - id: v0.6-attributes
+        label: "attributes"
+        type: percentage
+      - id: v0.6-zarr
+        label: "zarr"
+        type: percentage
+      - id: v0.6-transforms
+        label: "transforms"
+        type: percentage

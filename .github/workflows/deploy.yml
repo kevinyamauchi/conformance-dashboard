@@ -1,0 +1,88 @@
+name: Deploy
+
+# Publishes the site: builds via the reusable workflow, assembles a
+# self-contained site directory (build output + the static style.css),
+# and deploys it directly to GitHub Pages via GitHub's Actions-based
+# Pages deployment. Nothing is committed back to the repo - index.html
+# and data/conformance_results.json are pure build outputs that only
+# ever exist as the deployed artifact (and locally, if you run the
+# build yourself).
+#
+# Requires Settings -> Pages -> Source: "GitHub Actions" (not "Deploy
+# from a branch").
+#
+# Runs on:
+#   - push to main (so a merged PR's changes go live immediately)
+#   - an hourly schedule (so remote tool sources get picked up even if
+#     nobody has touched this repo)
+#   - manual dispatch (for an on-demand rebuild)
+#
+# Deliberately does not run on pull_request - a PR from a fork must never
+# be able to publish to Pages. That validation-only path is ci.yml.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "columns.yaml"
+      - "conformance_results/**"
+      - "scripts/**"
+      - "templates/**"
+      - "style.css"
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  assemble:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact-name }}
+
+      # The Pages artifact is self-contained - unlike "deploy from a
+      # branch", it does not fall back to the rest of the repo tree, so
+      # style.css and fonts/ have to be copied in explicitly alongside
+      # the generated index.html and data/conformance_results.json.
+      - name: Assemble site directory
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp style.css _site/style.css
+          cp -r fonts _site/fonts
+          cp data/conformance_results.json _site/data/conformance_results.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: assemble
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

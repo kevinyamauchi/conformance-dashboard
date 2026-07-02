@@ -1,0 +1,6 @@
+# URLs of raw tool YAML files maintained by tool developers in their own
+# repositories, following the same schema as files in
+# conformance_results/local/.
+
+sources: []
+  # - https://raw.githubusercontent.com/example-org/example-tool/main/zarr-compat.yaml

@@ -1,0 +1,22 @@
+# Example tool definition. Copy this file to create a new entry, e.g.
+# conformance_results/local/my-library.yaml
+#
+# Required fields: id, name, versions
+# Optional fields: homepage
+# `versions` lists one entry per tested release of the tool; each entry's
+# `values` maps column ids (see columns.yaml) to results. Omit a key if
+# untested - it will render as "unknown" rather than "no".
+
+id: abc
+name: abc
+homepage: "https://github.com/example/abc"
+versions:
+  - version: "2.1.0"
+    values:
+      v0.4-attributes: 100
+      v0.4-zarr: 100
+      v0.5-attributes: 100
+      v0.5-zarr: 100
+      v0.6-attributes: 100
+      v0.6-zarr: 100
+      v0.6-transforms: 100
