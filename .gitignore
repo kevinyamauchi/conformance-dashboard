@@ -5,6 +5,10 @@
 /index.html
 /data/conformance_results.json
 
+# Raw oztest JSON dumped by scripts/run_conformance_tests.py --save-json;
+# a debugging artifact, not a source of truth (the aggregated .yaml is).
+/conformance_results/local/*.oztest.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

@@ -5,13 +5,13 @@
 #     "pydantic>=2",
 # ]
 # ///
-"""ozconf dingus for yaozarrs. See README.md for the contract.
+"""oztest dingus for yaozarrs. See README.md for the contract.
 
     uv run --script dinguses/yaozarrs_dingus.py --describe
     uv run --script dinguses/yaozarrs_dingus.py <case.json>
 
 Run by scripts/run_conformance_tests.py, which discovers this file and
-hands it to `ozconf test`.
+hands it to `oztest test`.
 """
 import argparse
 import json
@@ -74,9 +74,9 @@ def validate(case_path: Path) -> int:
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse the single argument ozconf or the runner passes."""
+    """Parse the single argument oztest or the runner passes."""
     parser = argparse.ArgumentParser(
-        description=f"ozconf dingus for {NAME}; see dinguses/README.md."
+        description=f"oztest dingus for {NAME}; see dinguses/README.md."
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument(
